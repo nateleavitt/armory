@@ -4,14 +4,18 @@ be used for a basic config management service.
 
 REST
 
-GET :app/:env = > will produce full json config
-GET :app/:env/:key => will produce json value for given key<br />
+GET<br />
+:app/:env = > will produce full json config<br />
+:app/:env/:key => will produce json value for given key
 
-POST :app/:env (params: {'key1':'val1', 'key2':'val2'}) => creates :key for all :envs<br />
+POST<br />
+:app/:env (params: {'key1':'val1', 'key2':'val2'}) => adds key/vals to
+config
 
-UPDATE :app/:env/:key (params: 'val') = > updates key
+UPDATE<br />
+:app/:env/:key (params: 'val') = > updates key
 
-All data will be stored using Redis
+**All data will be stored using Redis**
 
 ### Requirements
 You need to have Redis installed ([instructions here](http://redis.io/topics/quickstart))
