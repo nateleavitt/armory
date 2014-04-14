@@ -1,6 +1,5 @@
 ## Examples
-### Note - app/env should be substituted for your application and
-environment
+#### Note - app/env should be substituted for your application and environment
 
 POST to add key,gals
 `curl -v -H "Accept: application/json" -H "Content-type:
