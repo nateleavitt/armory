@@ -12,4 +12,13 @@ POST :app (params: env: :value) = > creates a new :env
 
 All data will be stored using Redis
 
+#### Installation
+Install requirements
+`bundle install`
+
+#### Start Service
+Start server
+`ruby elvis.rb`
+
+#### Examples
 [Examples](https://github.com/nateleavitt/elvis/blob/master/examples.md)
