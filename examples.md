@@ -10,5 +10,5 @@ curl -v -H "Accept: application/json" -H "Content-type: application/json" \
 UPDATE to update key,val
 ```
 curl -v -H "Accept:application/json" -H "Content-type: application/json" \
--X PUT -d '{"val":"newkey1.2"}' http://localhost:4567/customerhub/development/key1
+-X PUT -d '{"val":"newkey1"}' http://localhost:4567/app/env/key1
 ```
