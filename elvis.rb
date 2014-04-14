@@ -23,9 +23,9 @@ end
 # update the key
 update '/:app/:env/:key' do
   check_for_json
-  body JSON.parse request.body.read
+  body = JSON.parse request.body.read
   app = "#{params[:app]}:#{params[:env]}"
-  REDIS.hset(app, params[:key], body[app])
+  REDIS.hset(app, params[:key], body)
 end
 
 # create new keys,vals for config
@@ -33,7 +33,7 @@ post '/:app/:env', :provides => :json do
   check_for_json
   body = JSON.parse request.body.read
   app = "#{params[:app]}:#{params[:env]}"
-  REDIS.mapped_hmset(app, body[app])
+  REDIS.mapped_hmset(app, body)
 end
 
 private
