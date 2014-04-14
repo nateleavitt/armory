@@ -33,5 +33,9 @@ bundle install
 ruby elvis.rb
 ```
 
+### Todo's
+1. Add authentication
+2. Add multiple 'store' options (only Redis right now)
+
 ### Examples
 [Examples](https://github.com/nateleavitt/elvis/blob/master/examples.md)
