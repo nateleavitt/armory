@@ -36,6 +36,7 @@ ruby elvis.rb
 ### Todo's
 1. Add authentication
 2. Add multiple 'store' options (only Redis right now)
+3. Add development, test, and production settings
 
 ### Examples
 [Examples](https://github.com/nateleavitt/elvis/blob/master/examples.md)
