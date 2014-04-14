@@ -21,11 +21,11 @@ get '/:app/:env/:key' do
 end
 
 # update the key
-update '/:app/:env/:key' do
+put '/:app/:env/:key' do
   check_for_json
   body = JSON.parse request.body.read
   app = "#{params[:app]}:#{params[:env]}"
-  REDIS.hset(app, params[:key], body)
+  REDIS.hset(app, params[:key], body["val"])
 end
 
 # create new keys,vals for config
