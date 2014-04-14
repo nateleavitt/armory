@@ -28,8 +28,8 @@ bundle install
 ruby elvis.rb
 
 #Start Redis
-```
 redis-server
+```
 
 ### Examples
 [Examples](https://github.com/nateleavitt/elvis/blob/master/examples.md)
