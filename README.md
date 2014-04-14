@@ -18,7 +18,7 @@ UPDATE<br />
 **All data will be stored using Redis**
 
 ### Requirements
-You need to have Redis installed ([instructions here](http://redis.io/topics/quickstart))
+You need to have Redis installed ([instructions here](http://redis.io/topics/quickstart)) and running
 
 ### Installation
 ```ruby
@@ -28,9 +28,6 @@ bundle install
 
 ### Start Service
 ```ruby
-#Start Redis
-redis-server
-
 #Start web server
 ruby elvis.rb
 ```
