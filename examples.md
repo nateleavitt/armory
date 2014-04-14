@@ -1,5 +1,5 @@
 ## Examples
-h2. Note - app/env should be substituted for your application and
+### Note - app/env should be substituted for your application and
 environment
 
 POST to add key,gals
