@@ -28,11 +28,11 @@ bundle install
 
 ### Start Service
 ```ruby
-#Start web server
-ruby elvis.rb
-
 #Start Redis
 redis-server
+
+#Start web server
+ruby elvis.rb
 ```
 
 ### Examples
