@@ -3,6 +3,7 @@ This is an **experimental** config project.  The idea is that this will
 be used for a basic config management service.
 
 REST
+---
 
 GET<br />
 :app/:env = > will produce full json config<br />
