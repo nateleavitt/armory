@@ -39,5 +39,5 @@ ruby elvis.rb
 2. Add multiple 'store' options (only Redis right now)
 3. Add development, test, and production settings
 
-### Examples
+### Examples for REST calls
 [Examples](https://github.com/nateleavitt/elvis/blob/master/examples.md)
