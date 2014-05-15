@@ -1,6 +1,11 @@
 require 'sinatra'
+require 'omniauth'
 require 'redis'
 require 'json'
+
+use OmniAuth::Builder do
+  provider :github, '895d6ceada4c2c78df33', '52b990226ddd5662966b7378a7f3b7e348f184f9'
+end
 
 configure do
   REDIS = Redis.new
