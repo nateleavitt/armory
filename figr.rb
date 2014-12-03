@@ -12,7 +12,7 @@ configure do
 end
 
 get '/' do
-  'Hello World.. this is Elvis'
+  'Hello World.. this is Figr'
 end
 
 # get the app environment config
