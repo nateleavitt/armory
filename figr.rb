@@ -6,7 +6,7 @@ class Figr < Sinatra::Application
 
   configure do
     register Sinatra::Flash
-    enable :sessions
+    set :sessions, true
     set :session_secret, 'DqIWXEx729NjQOVdaasvAhfTk2l1dURLBx8al38wMuAoByYktICTLrnoKTIqY'
     set :inline_templates, true
     uri = URI.parse(ENV["REDISCLOUD_URL"])
