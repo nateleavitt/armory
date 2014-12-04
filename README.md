@@ -1,4 +1,4 @@
-## ELVIS
+## FIGR
 This is an **experimental** config project.  The idea is that this will
 be used for a basic config management service.
 
@@ -24,7 +24,7 @@ UPDATE<br />
 ### Installation
 ```ruby
 #Download source
-git clone git@github.com:nateleavitt/elvis.git
+git clone git@github.com:nateleavitt/figr.git
 #Install requirements
 bundle install
 ```
@@ -32,7 +32,7 @@ bundle install
 ### Start Service
 ```ruby
 #Start web server
-ruby elvis.rb
+ruby figr.rb
 ```
 
 ### Todo's
@@ -41,4 +41,4 @@ ruby elvis.rb
 3. Write a service consumption gem (priscilla) which writes .env file for use with foreman
 
 ### Examples for REST calls
-[Examples](https://github.com/nateleavitt/elvis/blob/master/examples.md)
+[Examples](https://github.com/nateleavitt/figr/blob/master/examples.md)
