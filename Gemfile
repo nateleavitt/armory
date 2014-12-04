@@ -1,4 +1,5 @@
 source 'https://rubygems.org'
+ruby '2.1.1'
 gem 'sinatra', :github => "sinatra/sinatra"
 gem 'omniauth'
 gem 'omniauth-oauth2'
