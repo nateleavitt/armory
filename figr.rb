@@ -17,7 +17,7 @@ class SinatraApp < Sinatra::Base
   end
 
   use OmniAuth::Builder do
-    provider :github, '895d6ceada4c2c78df33', '52b990226ddd5662966b7378a7f3b7e348f184f9', scope: "user,repo,gist"
+    provider :github, ENV["GITHUB_CLIENT"], ENV["GITHUB_SECRET"], scope: "user"
   end
 
   # Support both GET and POST for callbacks
