@@ -8,18 +8,16 @@ require 'sinatra/flash'
 class SinatraApp < Sinatra::Base
 
   configure do
+    register Sinatra::Flash
     set :sessions, true
     set :session_secret, 'DqIWXEx729NjQOVdaasvAhfTk2l1dURLBx8al38wMuAoByYktICTLrnoKTIqY'
     set :inline_templates, true
+    uri = URI.parse(ENV["REDISCLOUD_URL"])
+    REDIS = Redis.new(:host => uri.host, :port => uri.port, :password => uri.password)
   end
-  register Sinatra::Flash
 
   use OmniAuth::Builder do
     provider :github, '895d6ceada4c2c78df33', '52b990226ddd5662966b7378a7f3b7e348f184f9', scope: "user,repo,gist"
-  end
-
-  configure do
-    REDIS = Redis.new
   end
 
   # Support both GET and POST for callbacks
