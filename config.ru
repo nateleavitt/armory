@@ -1,0 +1,2 @@
+require './figr'
+run Figr

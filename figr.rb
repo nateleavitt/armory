@@ -1,15 +1,12 @@
-require 'sinatra'
-require 'omniauth'
-require 'omniauth-github'
-require 'redis'
-require 'json'
-require 'sinatra/flash'
+require 'bundler'
+require 'uri'
+Bundler.require
 
-class SinatraApp < Sinatra::Base
+class Figr < Sinatra::Application
 
   configure do
     register Sinatra::Flash
-    set :sessions, true
+    enable :sessions
     set :session_secret, 'DqIWXEx729NjQOVdaasvAhfTk2l1dURLBx8al38wMuAoByYktICTLrnoKTIqY'
     set :inline_templates, true
     uri = URI.parse(ENV["REDISCLOUD_URL"])
@@ -91,5 +88,3 @@ class SinatraApp < Sinatra::Base
     end
 
 end
-
-SinatraApp.run! if __FILE__ == $0
