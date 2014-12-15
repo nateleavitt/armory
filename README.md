@@ -22,7 +22,7 @@ UPDATE<br />
 2. Redis ([instructions here](http://redis.io/topics/quickstart)) up and running. Run `redis-server` once installed
 
 ### Installation
-```ruby
+```bash
 #Download source
 git clone git@github.com:nateleavitt/figr.git
 #Install requirements
@@ -41,4 +41,4 @@ ruby figr.rb
 3. Write a service consumption gem (priscilla) which writes .env file for use with foreman
 
 ### Examples for REST calls
-[Examples](https://github.com/nateleavitt/figr/blob/master/examples.md)
+[Examples](https://github.com/nateleavitt/figr-service/blob/master/examples.md)

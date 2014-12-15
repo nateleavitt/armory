@@ -1,9 +1,6 @@
 source 'https://rubygems.org'
 ruby '2.1.5'
 gem 'sinatra', :github => "sinatra/sinatra"
-gem 'omniauth'
-gem 'omniauth-oauth2'
-gem 'omniauth-github'
 
 # other dependencies
 gem 'redis'

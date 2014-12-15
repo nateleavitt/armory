@@ -13,15 +13,12 @@ class Figr < Sinatra::Application
     REDIS = Redis.new(:host => uri.host, :port => uri.port, :password => uri.password)
   end
 
-  use OmniAuth::Builder do
-    provider :github, ENV["GITHUB_CLIENT"], ENV["GITHUB_SECRET"], scope: "user"
+  use Rack::Auth::Basic, "Restricted Area" do |username, password|
+    username == 'admin' and password == 'admin'
   end
 
-  # Support both GET and POST for callbacks
-  %w(get post).each do |method|
-    send(method, "/auth/:provider/callback") do
-      env['omniauth.auth'] # => OmniAuth::AuthHash
-    end
+  before do
+    authenticate!
   end
 
   get '/' do
@@ -30,26 +27,6 @@ class Figr < Sinatra::Application
     else
       'Hello World.. this is Figr'
     end
-  end
-
-  get '/auth/failure' do
-    flash[:notice] = params[:message] # if using sinatra-flash or rack-flash
-    redirect '/'
-  end
-
-  get '/auth/:provider/deauthorized' do
-    erb "#{params[:provider]} has deauthorized this app."
-  end
-
-  get '/protected' do
-    throw(:halt, [401, "Not authorized\n"]) unless session[:authenticated]
-    erb "<pre>#{request.env['omniauth.auth'].to_json}</pre><hr>
-         <a href='/logout'>Logout</a>"
-  end
-
-  get '/logout' do
-    session[:authenticated] = false
-    redirect '/'
   end
 
   # get the app environment config
@@ -84,7 +61,18 @@ class Figr < Sinatra::Application
     end
 
     def auth_hash
-      request.env['omniauth.auth']
+      # request.env['omniauth.auth']
+    end
+
+    def authenticate!
+      return if authorized?
+      headers['WWW-Authenticate'] = 'Basic realm="Restricted Area"'
+      halt 401, "Not authorized\n"
+    end
+
+    def authorized?
+      @auth ||=  Rack::Auth::Basic::Request.new(request.env)
+      @auth.provided? and @auth.basic? and @auth.credentials and @auth.credentials == ['admin', 'admin']
     end
 
 end
