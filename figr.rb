@@ -14,7 +14,7 @@ class Figr < Sinatra::Application
   end
 
   use Rack::Auth::Basic, "Restricted Area" do |username, password|
-    username == 'admin' and password == 'admin'
+    username == ENV['AUTH_USERNAME'] and password == ENV['AUTH_PASSWORD']
   end
 
   before do
