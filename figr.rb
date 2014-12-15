@@ -6,16 +6,16 @@ class Figr < Sinatra::Application
 
   configure do
     register Sinatra::Flash
-    set :sessions, true
-    set :session_secret, 'DqIWXEx729NjQOVdaasvAhfTk2l1dURLBx8al38wMuAoByYktICTLrnoKTIqY'
+    # set :sessions, true
+    # set :session_secret, 'DqIWXEx729NjQOVdaasvAhfTk2l1dURLBx8al38wMuAoByYktICTLrnoKTIqY'
     set :inline_templates, true
     uri = URI.parse(ENV["REDISCLOUD_URL"])
     REDIS = Redis.new(:host => uri.host, :port => uri.port, :password => uri.password)
   end
 
-  use Rack::Auth::Basic, "Restricted Area" do |username, password|
-    username == ENV['AUTH_USERNAME'] and password == ENV['AUTH_PASSWORD']
-  end
+  # use Rack::Auth::Basic, "Restricted Area" do |username, password|
+  #   username == ENV['AUTH_USERNAME'] and password == ENV['AUTH_PASSWORD']
+  # end
 
   before do
     authenticate!
@@ -25,7 +25,7 @@ class Figr < Sinatra::Application
     if flash[:notice]
       flash[:notice]
     else
-      'Hello World.. this is Figr'
+      puts 'Hello World.. this is Figr'
     end
   end
 
@@ -72,7 +72,7 @@ class Figr < Sinatra::Application
 
     def authorized?
       @auth ||=  Rack::Auth::Basic::Request.new(request.env)
-      @auth.provided? and @auth.basic? and @auth.credentials and @auth.credentials == ['admin', 'admin']
+      @auth.provided? and @auth.basic? and @auth.credentials and @auth.credentials == [ ENV['AUTH_USERNAME'], ENV['AUTH_PASSWORD'] ]
     end
 
 end
