@@ -64,7 +64,7 @@ Vagrant.configure("2") do |config|
   # end
 
   config.vm.provision "docker" do |d|
-    d.build_image = "."
+    d.build_image = ".", "-t 'figr-service'"
   end
 
   # plugin conflict
