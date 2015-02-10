@@ -56,15 +56,11 @@ Vagrant.configure("2") do |config|
   # end
 
 
-  # config.vm.provider :virtualbox do |v|
-  #   # On VirtualBox, we don't have guest additions or a functional vboxsf
-  #   # in CoreOS, so tell Vagrant that so it can be smarter.
-  #   v.check_guest_additions = false
-  #   v.functional_vboxsf     = false
-  # end
-
-  config.vm.provision "docker" do |d|
-    d.build_image = ".", "-t 'figr-service'"
+  config.vm.provider :virtualbox do |v|
+    # On VirtualBox, we don't have guest additions or a functional vboxsf
+    # in CoreOS, so tell Vagrant that so it can be smarter.
+    v.check_guest_additions = false
+    v.functional_vboxsf     = false
   end
 
   # plugin conflict
@@ -83,31 +79,15 @@ Vagrant.configure("2") do |config|
         serialFile = File.join(logdir, "%s-serial.txt" % vm_name)
         FileUtils.touch(serialFile)
 
-        ["vmware_fusion", "vmware_workstation"].each do |vmware|
-          config.vm.provider vmware do |v, override|
-            v.vmx["serial0.present"] = "TRUE"
-            v.vmx["serial0.fileType"] = "file"
-            v.vmx["serial0.fileName"] = serialFile
-            v.vmx["serial0.tryNoRxLoss"] = "FALSE"
-          end
-        end
-
         config.vm.provider :virtualbox do |vb, override|
           vb.customize ["modifyvm", :id, "--uart1", "0x3F8", "4"]
           vb.customize ["modifyvm", :id, "--uartmode1", serialFile]
         end
+
       end
 
       if $expose_docker_tcp
         config.vm.network "forwarded_port", guest: 2375, host: ($expose_docker_tcp + i - 1), auto_correct: true
-      end
-
-      ["vmware_fusion", "vmware_workstation"].each do |vmware|
-        config.vm.provider vmware do |v|
-          v.gui = vm_gui
-          v.vmx['memsize'] = vm_memory
-          v.vmx['numvcpus'] = vm_cpus
-        end
       end
 
       config.vm.provider :virtualbox do |vb|
@@ -116,11 +96,16 @@ Vagrant.configure("2") do |config|
         vb.cpus = vm_cpus
       end
 
+
       ip = "172.17.8.#{i+100}"
       config.vm.network :private_network, ip: ip
 
       # Uncomment below to enable NFS for sharing the host machine into the coreos-vagrant VM.
-      #config.vm.synced_folder ".", "/home/core/share", id: "core", :nfs => true, :mount_options => ['nolock,vers=3,udp']
+      config.vm.synced_folder ".", "/home/core/share", id: "core", :nfs => true, :mount_options => ['nolock,vers=3,udp']
+
+      config.vm.provision :docker do |d|
+        d.build_image '/home/core/share/', args: "-t figr-service:v0.1"
+      end
 
       # if $share_home
       #   config.vm.synced_folder ENV['HOME'], ENV['HOME'], id: "home", :nfs => true, :mount_options => ['nolock,vers=3,udp']
