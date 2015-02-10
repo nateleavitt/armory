@@ -6,11 +6,11 @@ class Figr < Sinatra::Application
 
   configure do
     register Sinatra::Flash
-    # set :sessions, true
-    # set :session_secret, 'DqIWXEx729NjQOVdaasvAhfTk2l1dURLBx8al38wMuAoByYktICTLrnoKTIqY'
+    set :sessions, true
+    set :session_secret, 'DqIWXEx729NjQOVdaasvAhfTk2l1dURLBx8al38wMuAoByYktICTLrnoKTIqY'
     set :inline_templates, true
-    uri = URI.parse(ENV["REDISCLOUD_URL"])
-    REDIS = Redis.new(:host => uri.host, :port => uri.port, :password => uri.password)
+    uri = URI.parse("")
+    ETCD = Etcd.client
   end
 
   # use Rack::Auth::Basic, "Restricted Area" do |username, password|
@@ -31,28 +31,26 @@ class Figr < Sinatra::Application
 
   # get the app environment config
   get '/:app/:env' do
-    REDIS.hgetall("#{params[:app]}:#{params[:env]}").to_json
+    ETCD.get("#{params[:app]}/#{params[:env]}")
   end
 
   # get the key
   get '/:app/:env/:key' do
-    REDIS.hget("#{params[:app]}:#{params[:env]}", params[:key]).to_json
+    ETCD.get("#{params[:app]}/#{params[:env]}/#{params[:key]}")
   end
 
   # update the key
   put '/:app/:env/:key' do
     check_for_json
     body = JSON.parse request.body.read
-    app = "#{params[:app]}:#{params[:env]}"
-    REDIS.hset(app, params[:key], body["val"])
+    ETCD.set("#{params[:app]}/#{params[:env]}/#{params[:key]}", body["val"])
   end
 
   # create new keys,vals for config
   post '/:app/:env', :provides => :json do
     check_for_json
     body = JSON.parse request.body.read
-    app = "#{params[:app]}:#{params[:env]}"
-    REDIS.mapped_hmset(app, body)
+    ETCD.set("#{params[:app]}/#{params[:env]}", body)
   end
 
   private
