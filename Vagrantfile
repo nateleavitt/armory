@@ -105,6 +105,7 @@ Vagrant.configure("2") do |config|
 
       config.vm.provision :docker do |d|
         d.build_image '/home/core/share/', args: "-t figr-service:v0.1"
+        d.run 'figr-service', image: 'figr-service:v0.1', args: "-p 4567"
       end
 
       # if $share_home
