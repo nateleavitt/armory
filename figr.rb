@@ -17,49 +17,56 @@ class Figr < Sinatra::Application
   #   username == ENV['AUTH_USERNAME'] and password == ENV['AUTH_PASSWORD']
   # end
 
-  before do
-    authenticate!
-  end
+  # before do
+  #   authenticate!
+  # end
 
   get '/' do
     if flash[:notice]
       flash[:notice]
     else
-      puts 'Hello World.. this is Figr'
+      'Hello World.. this is Figr'
     end
   end
 
   # get the app environment config
   get '/:app/:env' do
-    ETCD.get("#{params[:app]}/#{params[:env]}")
+    begin 
+      values = ETCD.get("/#{params[:app]}/#{params[:env]}").value
+      p values
+    rescue => e
+       status 404
+       body e.message
+    end
   end
 
   # get the key
   get '/:app/:env/:key' do
-    ETCD.get("#{params[:app]}/#{params[:env]}/#{params[:key]}")
+    begin 
+      values = ETCD.get("/#{params[:app]}/#{params[:env]}").value
+      val = JSON.parse(values)[params[:key]] || "Key not found"
+      p val
+    rescue => e
+       status 404
+       body e.message
+    end
   end
 
   # update the key
   put '/:app/:env/:key' do
     check_for_json
-    body = JSON.parse request.body.read
-    ETCD.set("#{params[:app]}/#{params[:env]}/#{params[:key]}", body["val"])
+    ETCD.set("/#{params[:app]}/#{params[:env]}", value: request.body.read)
   end
 
   # create new keys,vals for config
   post '/:app/:env', :provides => :json do
     check_for_json
-    body = JSON.parse request.body.read
-    ETCD.set("#{params[:app]}/#{params[:env]}", body)
+    ETCD.set("/#{params[:app]}/#{params[:env]}", value: request.body.read)
   end
 
   private
     def check_for_json
       pass unless request.accept? 'application/json'
-    end
-
-    def auth_hash
-      # request.env['omniauth.auth']
     end
 
     def authenticate!
