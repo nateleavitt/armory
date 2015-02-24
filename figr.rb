@@ -1,39 +1,29 @@
 require 'bundler'
-require 'uri'
 Bundler.require
 
 class Figr < Sinatra::Application
 
   configure do
-    register Sinatra::Flash
-    set :sessions, true
-    set :session_secret, 'DqIWXEx729NjQOVdaasvAhfTk2l1dURLBx8al38wMuAoByYktICTLrnoKTIqY'
-    set :inline_templates, true
-    uri = URI.parse("")
+    enable :logging
+    # register Sinatra::Flash
+    # set :sessions, true
+    # set :session_secret, 'DqIWXEx729NjQOVdaasvAhfTk2l1dURLBx8al38wMuAoByYktICTLrnoKTIqY'
+    # set :inline_templates, true
     ETCD = Etcd.client
   end
 
-  # use Rack::Auth::Basic, "Restricted Area" do |username, password|
-  #   username == ENV['AUTH_USERNAME'] and password == ENV['AUTH_PASSWORD']
-  # end
-
-  # before do
-  #   authenticate!
-  # end
+  before do
+    authenticate!
+  end
 
   get '/' do
-    if flash[:notice]
-      flash[:notice]
-    else
-      'Hello World.. this is Figr'
-    end
+    'Hello World.. this is Figr'
   end
 
   # get the app environment config
   get '/:app/:env' do
     begin 
-      values = ETCD.get("/#{params[:app]}/#{params[:env]}").value
-      p values
+      return ETCD.get("/#{params[:app]}/#{params[:env]}")
     rescue => e
        status 404
        body e.message
@@ -44,8 +34,12 @@ class Figr < Sinatra::Application
   get '/:app/:env/:key' do
     begin 
       values = ETCD.get("/#{params[:app]}/#{params[:env]}").value
-      val = JSON.parse(values)[params[:key]] || "Key not found"
-      p val
+      val = JSON.parse(values)[params[:key]]
+      if val.nil?
+        raise "Key not found" 
+      else
+        return val
+      end
     rescue => e
        status 404
        body e.message
@@ -65,6 +59,7 @@ class Figr < Sinatra::Application
   end
 
   private
+
     def check_for_json
       pass unless request.accept? 'application/json'
     end
