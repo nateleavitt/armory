@@ -1,5 +1,5 @@
 # base image
-FROM ruby:2.1.5
+FROM ruby:2.2.0
 
 # clone the repo
 RUN git clone -b vagrant https://github.com/nateleavitt/figr-service.git /app/
