@@ -3,7 +3,6 @@
 
 require 'fileutils'
 
-VAGRANTFILE_API_VERSION = "2"
 CLOUD_CONFIG_PATH = File.join(File.dirname(__FILE__), "user-data")
 # CONFIG = File.join(File.dirname(__FILE__), "config.rb")
 
@@ -17,7 +16,7 @@ $vm_gui = false
 $vm_memory = 1024
 $vm_cpus = 1
 
-Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|  
+Vagrant.configure("2") do |config|  
   config.vm.box = "coreos-%s" % $update_channel
   config.vm.box_version = ">= 308.0.1"
   config.vm.box_url = "http://%s.release.core-os.net/amd64-usr/current/coreos_production_vagrant.json" % $update_channel
@@ -28,11 +27,8 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
   config.vm.provision "shell", inline:
     "ps aux | grep 'sshd:' | awk '{print $2}' | xargs kill"
 
-  config.vm.network :forwarded_port, guest: 2375, host: 2375, auto_correct: true
-  config.vm.network :forwarded_port, guest: 4567, host: 4567, auto_correct: true
-  # config.vm.network :forwarded_port, guest: 6379, host: 6379
-  # config.vm.network :forwarded_port, guest: 5432, host: 5432
-  # config.vm.network :forwarded_port, guest: 9200, host: 9200
+  config.vm.network :forwarded_port, guest: 2375, host: 2375
+  config.vm.network :forwarded_port, guest: 4567, host: 4567
   
   # Uncomment below to enable NFS for sharing the host machine into the coreos-vagrant VM.
   # config.vm.synced_folder ".", "/app", id: "core", :nfs => true, :mount_options => ['nolock,vers=3,udp']

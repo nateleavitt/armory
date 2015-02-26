@@ -1,26 +1,15 @@
 # -*- mode: ruby -*-
 # # vi: set ft=ruby :
 
-VAGRANTFILE_API_VERSION = "2"  
-Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
+Vagrant.configure("2") do |config|
 
   config.vm.define "figr-service" do |v|
     v.vm.provider "docker" do |d|
-      # d.image = "dockerfile/redis"
       d.build_dir = "."
-      # d.volumes = ["/var/docker/redis:/data"]
       d.ports = ["4567:4567"]
       d.vagrant_vagrantfile = "./Vagrantfile.proxy"
     end
   end
-
-  # config.vm.define "elasticsearch" do |v|
-  #   v.vm.provider "docker" do |d|
-  #     d.image = "dockerfile/elasticsearch"
-  #     d.ports = ["9200:9200"]
-  #     d.vagrant_vagrantfile = "./Vagrantfile.proxy"
-  #   end
-  # end
 
   # config.vm.define "postgres" do |v|
   #   v.vm.provider "docker" do |d|
