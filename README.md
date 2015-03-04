@@ -1,4 +1,4 @@
-## FIGR
+## ARMORY
 This is an **experimental** config project.  The idea is that this will
 be used for a basic config management service.
 
@@ -24,7 +24,7 @@ UPDATE<br />
 ### Installation
 ```bash
 #Download source
-git clone git@github.com:nateleavitt/figr.git
+git clone git@github.com:nateleavitt/armory.git
 #Install requirements
 bundle install
 ```
@@ -32,7 +32,7 @@ bundle install
 ### Start Service
 ```ruby
 #Start web server
-ruby figr.rb
+ruby armory.rb
 ```
 
 ### Todo's

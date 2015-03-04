@@ -1,2 +1,2 @@
-require './figr'
-run Figr
+require './armory'
+run Armory
