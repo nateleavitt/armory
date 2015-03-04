@@ -20,7 +20,7 @@ class Config
   #
   attr_accessor :keys, :service, :env
 
-  def find(service, env)
+  def self.find(service, env)
     self.service = service
     self.env = env
     self.keys = ETCD.get("/armory/#{@service}/#{@env}").value[:keys]
@@ -30,9 +30,11 @@ class Config
     ETCD.set("/armory/#{@service}/#{@env}", value: {keys: @keys})
   end
 
-  def add_key(key_obj)
-    key = JSON.parse(key_obj)
-    self.keys[key[:name]] = key[:value]
+  def add_key(json_keys)
+    new_keys = validate_format_of(json_keys)
+    new_keys.each do |key|
+      self.keys[key[:name]] = key[:value]
+    end
   end
 
   def get_key(key)
@@ -61,5 +63,27 @@ class Config
        body e.message
     end
   end
+
+  private
+
+    def validate_format_of(json_keys)
+      error = "Please format your json data correctly. See https://github.com/nateleavitt/armory for the proper format"
+
+      begin
+        new_keys = JSON.parse(json_keys)
+        if new_keys.has_key?(:keys)
+          new_keys[:keys].to_hash.each do |key|
+            if !key.has_key?(:name) && !key.has_key?(:value)
+              raise error
+            end
+          end
+        else
+          raise error
+        end
+      rescue => e
+        status 404
+        body.e.message
+      end
+    end
 
 end

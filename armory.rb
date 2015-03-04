@@ -54,7 +54,7 @@ class Armory < Sinatra::Application
   end
 
   # update the key
-  put '/:service/:env/:key' do
+  put '/:service/:env/:key', :provides => :json do
     content_type :json
     @config = Config.find(params[:service], params[:env])
     @config.update_key(params[:key], request.body.read)
