@@ -10,8 +10,9 @@ class Armory < Sinatra::Application
     # register Sinatra::Flash
     # set :sessions, true
     # set :session_secret, 'DqIWXEx729NjQOVdaasvAhfTk2l1dURLBx8al38wMuAoByYktICTLrnoKTIqY'
-    # set :inline_templates, true
-    ETCD = Etcd.client(host: ENV['DOCKER_HOST'], port: 4001)
+    # This is needed for testing, otherwise the default
+    # error handler kicks in
+    set :show_exceptions, false
   end
 
   before do
@@ -24,12 +25,15 @@ class Armory < Sinatra::Application
 
   get '/health' do
     content_type :json
-    begin
-      ETCD.get('/stats/self')
-    rescue => e
-      status 404
-      body e.message
-    end
+    ETCD.get('/stats/self')
+  end
+
+  # create a new service/environment
+  post '/:service' do
+    @config = Config.new(service: params[:service])
+    @config.create_env(request.body.read)
+    logger.info "**** here is config #{@config.inspect}"
+    # @config.save
   end
 
   # get the app environment config
@@ -42,7 +46,7 @@ class Armory < Sinatra::Application
   # create new key,val for config
   post '/:service/:env', :provides => :json do
     @config = Config.find(params[:service], params[:env])
-    @config.add_key(request.body.read)
+    @config.create_keys(request.body.read)
     @config.save
   end
 
@@ -50,7 +54,7 @@ class Armory < Sinatra::Application
   get '/:service/:env/:key' do
     content_type :json
     @config = Config.find(params[:service], params[:env])
-    @config.get_key(params[:key]).to_json
+    @config.find_key(params[:key]).to_json
   end
 
   # update the key
@@ -58,6 +62,14 @@ class Armory < Sinatra::Application
     content_type :json
     @config = Config.find(params[:service], params[:env])
     @config.update_key(params[:key], request.body.read)
+  end
+
+  error do
+    content_type :json
+    status 404
+
+    e = env['sinatra.error']
+    {:result => 'error', :message => e.message}.to_json
   end
 
   private
@@ -69,7 +81,7 @@ class Armory < Sinatra::Application
     def authenticate!
       return if authorized?
       headers['WWW-Authenticate'] = 'Basic realm="Restricted Area"'
-      halt 401, "Not authorized\n"
+      raise "Not authorized"
     end
 
     def authorized?
@@ -78,4 +90,3 @@ class Armory < Sinatra::Application
     end
 
 end
-
