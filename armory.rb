@@ -33,8 +33,8 @@ class Armory < Sinatra::Application
   # { "service":"goldfish" }
   post '/' do
     check_for_json
-    @config = Config.new
-    @config.new_service(JSON.parse(request.body.read))
+    @config = Config.new("new")
+    @config.new_service(request.body.read)
     @config.create
   end
 
@@ -43,7 +43,7 @@ class Armory < Sinatra::Application
   # { "environment":"staging" }
   post '/:service', provides: :json do
     check_for_json
-    @config = Config.find(service: params[:service])
+    @config = Config.find(params[:service])
     @config.new_env(request.body.read)
     @config.save
   end
@@ -51,7 +51,7 @@ class Armory < Sinatra::Application
   # get the app environment config
   # will return a hash of key => values
   get '/:service/:env' do
-    @config = Config.find(service: params[:service])
+    @config = Config.find(params[:service], logger)
     @config.get_env(params[:env]).to_json
   end
 
@@ -60,7 +60,7 @@ class Armory < Sinatra::Application
   # { "api_key":"1234567" }
   post '/:service/:env', provides: :json do
     check_for_json
-    @config = Config.find(service: params[:service])
+    @config = Config.find(params[:service])
     @config.new_key(params[:env], request.body.read)
     @config.save
   end
@@ -69,7 +69,7 @@ class Armory < Sinatra::Application
   # will respond back with json formatted like
   # { "api_key":"1234567" }
   get '/:service/:env/:key' do
-    @config = Config.find(service: params[:service])
+    @config = Config.find(params[:service])
     @config.find_key(params[:env], params[:key]).to_json
   end
 
@@ -78,7 +78,7 @@ class Armory < Sinatra::Application
   # { "value":"1234567" }
   put '/:service/:env/:key', provides: :json do
     check_for_json
-    @config = Config.find(service: params[:service])
+    @config = Config.find(params[:service])
     @config.update_key(params[:env], params[:key], request.body.read)
     @config.save
   end

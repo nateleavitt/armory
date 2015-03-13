@@ -17,31 +17,36 @@ class Config
   # }
 
   attr_accessor :service, :envs
-  ETCD = Etcd.client(host: ENV['DOCKER_HOST'], port: ENV['ETCD_PORT'])
+  ETCD = Etcd.client(host: ENV['DOCKER_HOST'], port: 4001)
   @@format_error = "Please format your json data correctly. See https://github.com/nateleavitt/armory for the proper format"
 
-  def initialize(attrs={})
+  def initialize(service)
     self.envs = {}
-    attrs.each { |key, val| send("#{key}=", val) } if !attrs.empty?
+    self.service = service
+    # attrs.each { |key, val| send("#{key}=", val[key]) } if !attrs.empty?
   end
 
   def self.find(service)
-    config = self.new(service: service)
-    config.envs = JSON.parse(ETCD.get("/armory/#{service}").value)
+    config = self.new(service)
+    config.envs = ETCD.get("/armory/#{@service}").value.to_h
     return config
   end
 
   def create
-    ETCD.set("/armory/#{@service.to_sym}", value: @envs.to_json)
+    ETCD.set("/armory/#{@service}", value: @envs.to_json)
   end
 
   def save
-    ETCD.update("/armory/#{@service.to_sym}", value: @envs.to_json)
+    ETCD.update("/armory/#{@service}", value: @envs.to_json)
   end
 
   def new_service(json_service)
-    self.service = JSON.parse(json_service)
-    raise @@format_error unless @service.has_key?(:service)
+    json_service = JSON.parse(json_service)
+    if json_service["service"]
+      self.service = json_service["service"]
+    else
+      raise @@format_error
+    end
   end
 
   def new_env(json_env)
@@ -54,8 +59,8 @@ class Config
   end
 
   def get_env(env)
-    if @envs.has_key?(env.to_sym)
-      @envs[env.to_sym]
+    if @envs.has_key?(env)
+      @envs[env]
     else
       raise "Environment does not exist!"
     end
