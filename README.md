@@ -13,29 +13,30 @@ GET<br />
 
 POST<br />
 :app/:env 
-you must create a json oject with the keys of 'name' and 'keys' object. Keys will include an array of key
-objects. These key objects will have a name and value for the keys.
+when creating new keys you post them as a json object like the
+following:
+`{"api_key":"123qwe123qwe"}`
 
 Example: 
 ```json
    {
-     "name":"production",
-     "keys":[
-       {
-         "name":"api_key",
-         "value":"123qwe123qwe"
-       },
-       {
-         "name":"aws_location",
-         "value":"aws.amazon.com"
-       }
-     ]
+    "staging": {
+      "api_key":"123qwe123qwe",
+      "aws_location":"aws.amazon.com"
+    },
+    "production": {
+      "api_key":"123qwe123qwe",
+      "aws_location":"aws.amazon.com"
+    }
    }
 ```
 config
 
 UPDATE<br />
-:app/:env/:key (params: 'val') = > updates key
+:app/:env/:key 
+json to update a key should be sent as
+
+`{"value":"value_of_key"}`
 
 **All data will be stored using ETCD**
 
