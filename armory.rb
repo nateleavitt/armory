@@ -17,6 +17,7 @@ class Armory < Sinatra::Application
 
   before do
     authenticate!
+    content_type :json
   end
 
   get '/' do
@@ -24,44 +25,62 @@ class Armory < Sinatra::Application
   end
 
   get '/health' do
-    content_type :json
     ETCD.get('/stats/self')
   end
 
+  # creates a new service namespace
+  # json should be in the following format
+  # { "service":"goldfish" }
+  post '/' do
+    check_for_json
+    @config = Config.new
+    @config.new_service(JSON.parse(request.body.read))
+    @config.create
+  end
+
   # create a new service/environment
-  post '/:service' do
-    @config = Config.new(service: params[:service])
-    @config.create_env(request.body.read)
-    logger.info "**** here is config #{@config.inspect}"
-    # @config.save
+  # json should be in the following format
+  # { "environment":"staging" }
+  post '/:service', provides: :json do
+    check_for_json
+    @config = Config.find(service: params[:service])
+    @config.new_env(request.body.read)
+    @config.save
   end
 
   # get the app environment config
+  # will return a hash of key => values
   get '/:service/:env' do
-    content_type :json
-    @config = Config.find(params[:service], params[:env])
-    @config.to_json
+    @config = Config.find(service: params[:service])
+    @config.get_env(params[:env]).to_json
   end
 
   # create new key,val for config
-  post '/:service/:env', :provides => :json do
-    @config = Config.find(params[:service], params[:env])
-    @config.create_keys(request.body.read)
+  # json should be in the following format
+  # { "api_key":"1234567" }
+  post '/:service/:env', provides: :json do
+    check_for_json
+    @config = Config.find(service: params[:service])
+    @config.new_key(params[:env], request.body.read)
     @config.save
   end
 
   # get the key
+  # will respond back with json formatted like
+  # { "api_key":"1234567" }
   get '/:service/:env/:key' do
-    content_type :json
-    @config = Config.find(params[:service], params[:env])
-    @config.find_key(params[:key]).to_json
+    @config = Config.find(service: params[:service])
+    @config.find_key(params[:env], params[:key]).to_json
   end
 
   # update the key
-  put '/:service/:env/:key', :provides => :json do
-    content_type :json
-    @config = Config.find(params[:service], params[:env])
-    @config.update_key(params[:key], request.body.read)
+  # json should be in the following format
+  # { "value":"1234567" }
+  put '/:service/:env/:key', provides: :json do
+    check_for_json
+    @config = Config.find(service: params[:service])
+    @config.update_key(params[:env], params[:key], request.body.read)
+    @config.save
   end
 
   error do
