@@ -51,7 +51,7 @@ class Armory < Sinatra::Application
   # get the app environment config
   # will return a hash of key => values
   get '/:service/:env' do
-    @config = Config.find(params[:service], logger)
+    @config = Config.find(params[:service])
     @config.get_env(params[:env]).to_json
   end
 
