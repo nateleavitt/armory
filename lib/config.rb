@@ -28,7 +28,7 @@ class Config
 
   def self.find(service)
     config = self.new(service)
-    config.envs = ETCD.get("/armory/#{@service}").value.to_h
+    config.envs = JSON.parse(ETCD.get("/armory/#{config.service}").value)
     return config
   end
 
@@ -69,7 +69,7 @@ class Config
   def new_key(env, json_new_key)
     begin
       new_key = JSON.parse(json_new_key)
-      self.envs[env.to_sym] = @envs[env.to_sym].to_h.merge(new_key)
+      self.envs[env] = self.envs[env].to_h.merge(new_key)
     rescue
       raise @@format_error
     end
@@ -77,8 +77,8 @@ class Config
 
   def find_key(env, key)
     env = get_env(env)
-    if env.has_key?(key.to_sym)
-      return env[key.to_sym]
+    if env.has_key?(key)
+      return env[key]
     else
       raise 'Key not found!'
     end
@@ -87,8 +87,8 @@ class Config
   def update_key(env, key, value)
     if value["value"]
       env = get_env(env)
-      if @envs[env].has_key?(key.to_sym)
-        self.envs[env][key.to_sym] = JSON.parse(value["value"])
+      if @envs[env].has_key?(key)
+        self.envs[env][key] = JSON.parse(value["value"])
       else
         raise 'Key not found'
       end
