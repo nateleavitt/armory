@@ -5,40 +5,9 @@ the benefits of redundancy and reliability that etcd brings. This can be
 used as a central config for many services
 
 
-REST
+### Documentation
+[Examples](https://github.com/nateleavitt/armory-service/blob/master/docs.md)
 
-GET<br />
-:app/:env = > will produce full json config<br />
-:app/:env/:key => will produce json value for given key
-
-POST<br />
-:app/:env 
-when creating new keys you post them as a json object like the
-following:
-`{"api_key":"123qwe123qwe"}`
-
-Example: 
-```json
-   {
-    "staging": {
-      "api_key":"123qwe123qwe",
-      "aws_location":"aws.amazon.com"
-    },
-    "production": {
-      "api_key":"123qwe123qwe",
-      "aws_location":"aws.amazon.com"
-    }
-   }
-```
-config
-
-UPDATE<br />
-:app/:env/:key 
-json to update a key should be sent as
-
-`{"value":"value_of_key"}`
-
-**All data will be stored using ETCD**
 
 ### Requirements
 1. Bundler `gem install bundler`
@@ -62,5 +31,3 @@ ruby armory.rb
 1. Add ACL
 2. Create a CLI for Armory
 
-### Examples for REST calls
-[Examples](https://github.com/nateleavitt/armory-service/blob/master/examples.md)

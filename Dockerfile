@@ -7,5 +7,4 @@ WORKDIR /app
 RUN bundle install
 
 # expose port and start service
-EXPOSE 4567
-CMD ["bundle", "exec", "foreman", "start", "-d", "/app/", "-f", "/app/Procfile", "-p", "4567"]
+CMD ["bundle", "exec", "foreman", "start", "-d", "/app/", "-f", "/app/Procfile" ]
