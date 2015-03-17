@@ -31,7 +31,7 @@ current versions is `v1` and should be requested as
 
 #### **Service**
 
-#### Create new service
+##### Create new service
 
 ```
 POST /v1/
