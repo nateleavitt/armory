@@ -31,15 +31,24 @@ current versions is `v1` and should be requested as
 
 #### **Service**
 
-##### Create new service
+* `GET /services/` - will get an array of all services currently setup in Armory
 
+Response
+```json
+Status 200
+
+{
+ "services":[goldfish, customerhub]
+
+}
 ```
-POST /v1/
-```
+
+* `POST /services/` - will create a new service namespace in Armory
+
 Example
 ```json
 { 
-  "service":"goldfish" 
+  "name":"goldfish" 
 }
 ```
 Response
@@ -47,6 +56,6 @@ Response
 Status: 201 Created
 
 {
-  "service":"goldfish"
+  "name":"goldfish"
 }
 ```

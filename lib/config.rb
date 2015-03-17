@@ -42,8 +42,8 @@ class Config
 
   def new_service(json_service)
     json_service = JSON.parse(json_service)
-    if json_service["service"]
-      self.service = json_service["service"]
+    if json_service["name"]
+      self.service = json_service["name"]
     else
       raise @@format_error
     end
@@ -51,7 +51,7 @@ class Config
 
   def new_env(json_env)
     begin
-      json_env = JSON.parse(json_env)["environment"]
+      json_env = JSON.parse(json_env)["name"]
       self.envs[json_env] = {}
     rescue
       raise @@format_error
