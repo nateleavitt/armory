@@ -6,7 +6,7 @@ used as a central config for many services
 
 
 ### Documentation
-[Examples](https://github.com/nateleavitt/armory-service/blob/master/docs.md)
+[Docs](https://github.com/nateleavitt/armory/blob/master/docs.md)
 
 
 ### Requirements
