@@ -1,76 +1,65 @@
-require 'etcd'
+require 'rest_client'
 
 class Config
   # a config for the :service/:environment
   # the config will be stored in ETCD as
-  # /armory/:service_name/:environment
+  # /armory/services/:service/envs/:env
   # the json object value will be formatted as
   # {
-  #  "staging": {
-  #    "api_key":"123qwe123qwe",
-  #    "aws_location":"aws.amazon.com"
-  #  },
-  #  "production": {
-  #    "api_key":"123qwe123qwe",
-  #    "aws_location":"aws.amazon.com"
-  #  }
+  #   "api_key":"123qwe123qwe",
+  #   "aws_location":"aws.amazon.com"
   # }
 
-  attr_accessor :service, :envs
-  ETCD = Etcd.client(host: ENV['DOCKER_HOST'], port: 4001)
+  attr_accessor :path, :service, :env
+  ETCD = RestClient::Resource.new("#{ENV['DOCKER_HOST']}:4001/v2/keys/armory",
+                                 :content_type => "application/json")
   @@format_error = "Please format your json data correctly. See https://github.com/nateleavitt/armory for the proper format"
 
-  def initialize(service)
-    self.envs = {}
-    self.service = service
-    # attrs.each { |key, val| send("#{key}=", val[key]) } if !attrs.empty?
+  def initialize(attrs={})
+    path = ""
+    if attrs.has_key?(:service)
+      self.service = attrs[:service]
+      path += "/#{attrs[:service]}" 
+    end
+    if attrs.has_key?(:env)
+      self.env = attrs[:env]
+      path += "/#{attrs[:env]}" 
+    end
+    self.path = path
   end
 
-  def self.find(service)
-    config = self.new(service)
-    config.envs = JSON.parse(ETCD.get("/armory/#{config.service}").value)
+  def self.find(attrs={})
+    config = self.new(attrs)
+    config.env = config.parse_json(ETCD[config.path].get)
     return config
   end
 
-  def create
-    ETCD.set("/armory/#{@service}", value: @envs.to_json)
-  end
-
-  def save
-    ETCD.update("/armory/#{@service}", value: @envs.to_json)
-  end
-
-  def new_service(json_service)
-    json_service = JSON.parse(json_service)
-    if json_service["name"]
-      self.service = json_service["name"]
+  def new_namespace(json)
+    json = JSON.parse(json)
+    if !json.empty? && json.is_a?(Hash) && json["name"]
+      ETCD[@path + "/#{json["name"]}"].put "dir=true"
     else
       raise @@format_error
     end
   end
 
-  def new_env(json_env)
-    begin
-      json_env = JSON.parse(json_env)["name"]
-      self.envs[json_env] = {}
-    rescue
-      raise @@format_error
+  def new_keys(json)
+    new_config = JSON.parse(json)
+    added = []
+    new_config.each do |k,v|
+      if ETCD[@path + "/#{k}"].put "value=#{v}"
+        added << k
+      end
     end
+    return { "keys added" => added.to_s }.to_json
   end
 
-  def get_env(env)
-    if @envs.has_key?(env)
-      @envs[env]
+  def update_key(new_key, json)
+    json = JSON.parse(json)
+    if !json.empty? && json.is_a?(Hash) && json["value"]
+      config = {new_key => json.first.value}
+      ETCD[@path + "#{config.first.key}"].set config.first.value
     else
-      raise "Environment does not exist!"
-    end
-  end
-
-  def new_key(env, json_new_key)
-    begin
-      new_key = JSON.parse(json_new_key)
-      self.envs[env] = self.envs[env].to_h.merge(new_key)
-    rescue
       raise @@format_error
     end
   end
@@ -95,6 +84,17 @@ class Config
     else
       raise @@format_error
     end
+  end
+
+  def parse_json(etcd_json)
+    env = JSON.parse(etcd_json)
+    env_map = {}
+    env["node"]["nodes"].each do |k|
+      key = k["key"]
+      key.slice!("/armory#{@path}/")
+      env_map[key] = k["value"]
+    end
+    return env_map
   end
 
 end

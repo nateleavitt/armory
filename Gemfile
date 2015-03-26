@@ -6,5 +6,7 @@ gem 'sinatra', :github => "sinatra/sinatra"
 gem 'rest-client'
 gem 'json'
 gem 'foreman'
-gem 'etcd'
+# gem 'etcd'
+gem 'puma'
+
 

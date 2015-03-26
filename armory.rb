@@ -13,6 +13,7 @@ class Armory < Sinatra::Application
     # This is needed for testing, otherwise the default
     # error handler kicks in
     set :show_exceptions, false
+    set :server, :puma
   end
 
   before do
@@ -33,9 +34,8 @@ class Armory < Sinatra::Application
   # { "name":"goldfish" }
   post '/services' do
     check_for_json
-    @config = Config.new("new")
-    @config.new_service(request.body.read)
-    @config.create
+    @config = Config.new
+    @config.new_namespace(request.body.read)
   end
 
   # create a new service/environment
@@ -43,16 +43,15 @@ class Armory < Sinatra::Application
   # { "name":"staging" }
   post '/services/:service/envs', provides: :json do
     check_for_json
-    @config = Config.find(params[:service])
-    @config.new_env(request.body.read)
-    @config.save
+    @config = Config.find(service: params[:service])
+    @config.new_namespace(request.body.read)
   end
 
   # get the app environment config
   # will return a hash of key => values
-  get '/services/:service/envs/:env/config' do
-    @config = Config.find(params[:service])
-    @config.get_env(params[:env]).to_json
+  get '/services/:service/envs/:env' do
+    @config = Config.find(service: params[:service], env: params[:env])
+    return @config.env.to_json
   end
 
   # create new key,val for config
@@ -60,9 +59,8 @@ class Armory < Sinatra::Application
   # { "api_key":"1234567" }
   post '/services/:service/envs/:env/config', provides: :json do
     check_for_json
-    @config = Config.find(params[:service])
-    @config.new_key(params[:env], request.body.read)
-    @config.save
+    @config = Config.find(service: params[:service], env: params[:env])
+    @config.new_keys(request.body.read)
   end
 
   # get the key
@@ -76,7 +74,7 @@ class Armory < Sinatra::Application
   # update the key
   # json should be in the following format
   # { "value":"1234567" }
-  put '/services/:service/envs/:env/config/:key', provides: :json do
+  put '/services/service/envs/:env/config/:key', provides: :json do
     check_for_json
     @config = Config.find(params[:service])
     @config.update_key(params[:env], params[:key], request.body.read)
@@ -85,7 +83,7 @@ class Armory < Sinatra::Application
 
   error do
     content_type :json
-    status 404
+    # status 404
 
     e = env['sinatra.error']
     {:result => 'error', :message => e.message}.to_json

@@ -36,9 +36,8 @@ current versions is `v1` and should be requested as
 Response
 ```json
 Status 200
-
 {
- "services":[goldfish, customerhub]
+ "services":["goldfish", "customerhub"]
 
 }
 ```
