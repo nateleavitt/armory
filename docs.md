@@ -29,32 +29,67 @@ current versions is `v1` and should be requested as
 
 ### Endpoints
 
+* Important URL values
+:service = is the name of the service
+:env = is the name of the environment for the given service
+:key = is the name of the key for the given environment and service
+
+
 #### **Service**
 
-* `GET /services/` - will get an array of all services currently setup in Armory
+* `GET /services` - will return an array of all services currently setup in Armory
 
 Response
 ```json
 Status 200
 {
- "services":["goldfish", "customerhub"]
+ "result":["goldfish", "customerhub"]
 
 }
 ```
 
-* `POST /services/` - will create a new service namespace in Armory
+* `POST /services` - will create a new service namespace in Armory
+Required param: name
 
 Example
 ```json
 { 
-  "name":"goldfish" 
+  "result":"goldfish" 
 }
 ```
 Response
 ```json
-Status: 201 Created
+Status: 200
 
 {
-  "name":"goldfish"
+  "result":"goldfish"
+}
+```
+
+* `GET /services/:service/envs` - will get return an array of all environments setup for the given service
+
+Example
+```json
+{
+  "result":["testing", "staging"]
+}
+```
+
+* `POST /services/:service/envs` - will create a new env for the given
+service
+
+Required param: name
+
+Example
+```json
+{
+  "name":"production"
+}
+```
+Response
+```json
+Status: 200
+{
+  "result":"production"
 }
 ```

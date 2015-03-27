@@ -10,7 +10,7 @@ class Config
   #   "aws_location":"aws.amazon.com"
   # }
 
-  attr_accessor :path, :service, :env
+  attr_accessor :path, :service, :env, :env_map
   ETCD = RestClient::Resource.new("#{ENV['DOCKER_HOST']}:4001/v2/keys/armory",
                                  :content_type => "application/json")
   @@format_error = "Please format your json data correctly. See https://github.com/nateleavitt/armory for the proper format"
@@ -30,71 +30,72 @@ class Config
 
   def self.find(attrs={})
     config = self.new(attrs)
-    config.env = config.parse_json(ETCD[config.path].get)
+    config.env_map = config.parse_json(ETCD[config.path].get)
     return config
   end
 
+  # json should be sent formatted as the following
+  # { "name":"name_of_service_or_env" }
   def new_namespace(json)
     json = JSON.parse(json)
     if !json.empty? && json.is_a?(Hash) && json["name"]
       ETCD[@path + "/#{json["name"]}"].put "dir=true"
+      return { "result" => json["name"] }.to_json
     else
       raise @@format_error
     end
   end
 
+  # json sent in can be a hash of 
+  # { "key1":"value1", "key2":"value2" }
   def new_keys(json)
     new_config = JSON.parse(json)
-    added = []
     new_config.each do |k,v|
-      if ETCD[@path + "/#{k}"].put "value=#{v}"
-        added << k
+      unless self.env_map.has_key?(k)
+        ETCD[@path + "/#{k}"].put "value=#{v}"
+      else
+        raise "#{k} is a key that already exists"
       end
     end
-    return { "keys added" => added.to_s }.to_json
+    return new_config.to_json
   end
 
-  def update_key(new_key, json)
-    json = JSON.parse(json)
-    if !json.empty? && json.is_a?(Hash) && json["value"]
-      config = {new_key => json.first.value}
-      ETCD[@path + "#{config.first.key}"].set config.first.value
-    else
-      raise @@format_error
-    end
-  end
-
-  def find_key(env, key)
-    env = get_env(env)
-    if env.has_key?(key)
-      return env[key]
+  # key is a string of the key you want to retrieve
+  def find_key(key)
+    if env_map.has_key?(key)
+      return { key => env_map[key]}.to_json
     else
       raise 'Key not found!'
     end
   end
 
-  def update_key(env, key, value)
-    if value["value"]
-      env = get_env(env)
-      if @envs[env].has_key?(key)
-        self.envs[env][key] = JSON.parse(value["value"])
+  # json received should be in the following format
+  # { "value":"value_of_key" }
+  def update_key(key, json)
+    json = JSON.parse(json)
+    if env_map.has_key?(key)
+      if !json.empty? && json.is_a?(Hash) && json["value"]
+          ETCD[@path + "/#{key}"].put "value=#{json["value"]}"
+          return { "result" => json["value"] }.to_json
       else
-        raise 'Key not found'
+        raise @@format_error
       end
     else
-      raise @@format_error
+      raise 'Key not found!'
     end
   end
 
   def parse_json(etcd_json)
     env = JSON.parse(etcd_json)
     env_map = {}
-    env["node"]["nodes"].each do |k|
-      key = k["key"]
-      key.slice!("/armory#{@path}/")
-      env_map[key] = k["value"]
+    if env["node"]["nodes"]
+      env["node"]["nodes"].each do |k|
+        key = k["key"]
+        key.slice!("/armory#{@path}/")
+        env_map[key] = k["value"]
+      end
     end
-    return env_map
+    env_map
   end
 
 end

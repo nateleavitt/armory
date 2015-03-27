@@ -29,6 +29,13 @@ class Armory < Sinatra::Application
     ETCD.get('/stats/self')
   end
 
+  # get an array of all services setup in armory
+  # { "services":["goldfish","customerhub"] }
+  get '/services', provides: :json do
+    @config = Config.find
+    { "result" => @config.env_map.keys}.to_json
+  end
+
   # creates a new service namespace
   # json should be in the following format
   # { "name":"goldfish" }
@@ -36,6 +43,15 @@ class Armory < Sinatra::Application
     check_for_json
     @config = Config.new
     @config.new_namespace(request.body.read)
+  end
+
+
+  # get an array of all envs setup for the
+  # given service
+  # { "envs":["testing","staging"] }
+  get '/services/:service/envs', provides: :json do
+    @config = Config.find(service: params[:service])
+    { "result" => @config.env_map.keys}.to_json
   end
 
   # create a new service/environment
@@ -47,16 +63,16 @@ class Armory < Sinatra::Application
     @config.new_namespace(request.body.read)
   end
 
-  # get the app environment config
-  # will return a hash of key => values
-  get '/services/:service/envs/:env' do
+  # get the config for a specific env
+  # will return a map of key:value
+  get '/services/:service/envs/:env/config', provides: :json do
     @config = Config.find(service: params[:service], env: params[:env])
-    return @config.env.to_json
+    @config.env_map.to_json
   end
 
   # create new key,val for config
   # json should be in the following format
-  # { "api_key":"1234567" }
+  # { "key1":"value1", "key2":"value2" }
   post '/services/:service/envs/:env/config', provides: :json do
     check_for_json
     @config = Config.find(service: params[:service], env: params[:env])
@@ -66,19 +82,18 @@ class Armory < Sinatra::Application
   # get the key
   # will respond back with json formatted like
   # { "api_key":"1234567" }
-  get '/services/:service/envs/:env/config/:key' do
-    @config = Config.find(params[:service])
-    @config.find_key(params[:env], params[:key]).to_json
+  get '/services/:service/envs/:env/config/:key', provides: :json do
+    @config = Config.find(service: params[:service], env: params[:env])
+    @config.find_key(params[:key])
   end
 
   # update the key
   # json should be in the following format
   # { "value":"1234567" }
-  put '/services/service/envs/:env/config/:key', provides: :json do
+  put '/services/:service/envs/:env/config/:key', provides: :json do
     check_for_json
-    @config = Config.find(params[:service])
-    @config.update_key(params[:env], params[:key], request.body.read)
-    @config.save
+    @config = Config.find(service: params[:service], env: params[:env])
+    @config.update_key(params[:key], request.body.read)
   end
 
   error do
@@ -87,6 +102,10 @@ class Armory < Sinatra::Application
 
     e = env['sinatra.error']
     {:result => 'error', :message => e.message}.to_json
+  end
+
+  not_found do
+    {:result => 'error', :message => "404 Not found!"}.to_json
   end
 
   private
