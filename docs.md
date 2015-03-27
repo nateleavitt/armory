@@ -51,10 +51,10 @@ Status: 200
 
 
 * `POST /services` - will create a new service namespace in Armory
-Required param: name
 
 ```json
 Example
+Required param: name
 
 { 
   "result":"goldfish" 
@@ -84,10 +84,9 @@ Example
 * `POST /services/:service/envs` - will create a new env for the given
 service
 
-Required param: name
-
 ```json
 Example
+Required param: name
 
 {
   "name":"production"
@@ -101,3 +100,16 @@ Status: 200
   "result":"production"
 }
 ```
+
+*  `GET /services/:service/envs/:env/config` - this will return the
+entire map of config for the given service and environment
+
+```json
+Response
+Status: 200
+
+{
+  "result":{"api_key":"123123123123","username":"johndoe"}
+}
+```
+
