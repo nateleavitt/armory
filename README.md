@@ -22,9 +22,14 @@ bundle install
 ```
 
 ### Start Service
-```ruby
-#Start web server
-ruby armory.rb
+ETCD
+```bash
+etcd
+```
+
+```bash
+#Start Puma Server using foreman
+forman start
 ```
 
 ### Todo's
