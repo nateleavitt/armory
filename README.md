@@ -22,6 +22,10 @@ bundle install
 ```
 
 ### Start Service
+This service was created to be run with Docker on CoreOS. However you
+can also manually run it locally on your machine. To do so, follow the
+steps below:
+
 ETCD
 ```bash
 etcd

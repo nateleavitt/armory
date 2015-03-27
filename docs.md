@@ -26,7 +26,7 @@ header in your client.
 ### Current Version
 Currently the API version is specified in the url of the api request. The
 current versions is `v1` and should be requested as
-`https://url-of-service.com/v1`. 
+`https://url-of-service.com/v1`.
 
 ### Endpoints
 
@@ -56,8 +56,8 @@ Status: 200
 Example
 Required param: value
 
-{ 
-  "value":"goldfish" 
+{
+  "value":"goldfish"
 }
 ```
 ```json
