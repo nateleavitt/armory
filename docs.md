@@ -54,6 +54,7 @@ Required param: name
 
 ```json
 Example
+
 { 
   "result":"goldfish" 
 }
@@ -69,8 +70,9 @@ Status: 200
 
 * `GET /services/:service/envs` - will get return an array of all environments setup for the given service
 
-Example
 ```json
+Example
+
 {
   "result":["testing", "staging"]
 }
@@ -85,6 +87,7 @@ Required param: name
 
 ```json
 Example
+
 {
   "name":"production"
 }
