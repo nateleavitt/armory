@@ -5,12 +5,13 @@ service. The following describe the resources that make up the v1 API.
 ### Overview
 Here is the list of resources you will be able to access:
 
-1. Service - This is the name of the service you are wanting to set/get
+* Service - This is the name of the service you are wanting to set/get
 config for (ie.. usually your Github repo name
-2. Environment - This allows you to have environment scope for your
+* Environment - This allows you to have environment scope for your
 config. Some examples would be 'testing', 'staging', 'production'.
-3. Keys - This is the name and value of an individual setting. This is
-stored in a key => value format.
+* Config - This will return a map of key:values for the given service
+and environment
+* Key - This is the value of an individual setting
 
 
 All calls should be made using the following HTTP verbs: GET, POST, PUT,
