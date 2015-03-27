@@ -26,14 +26,9 @@ This service was created to be run with Docker on CoreOS. However you
 can also manually run it locally on your machine. To do so, follow the
 steps below:
 
-ETCD
 ```bash
-etcd
-```
-
-```bash
-#Start Puma Server using foreman
-forman start
+#Start ETCD & Puma Server using foreman
+foreman start
 ```
 
 ### Todo's
