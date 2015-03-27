@@ -39,8 +39,8 @@ current versions is `v1` and should be requested as
 
 * `GET /services` - will return an array of all services currently setup in Armory
 
-Response
 ```json
+Response
 Status: 200
 
 {
@@ -48,17 +48,18 @@ Status: 200
 }
 ```
 
+
 * `POST /services` - will create a new service namespace in Armory
 Required param: name
 
-Example
 ```json
+Example
 { 
   "result":"goldfish" 
 }
 ```
-Response
 ```json
+Response
 Status: 200
 
 {
@@ -75,19 +76,21 @@ Example
 }
 ```
 
+#### **Environments**
+
 * `POST /services/:service/envs` - will create a new env for the given
 service
 
 Required param: name
 
-Example
 ```json
+Example
 {
   "name":"production"
 }
 ```
-Response
 ```json
+Response
 Status: 200
 
 {
