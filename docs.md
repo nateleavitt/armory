@@ -54,10 +54,10 @@ Status: 200
 
 ```json
 Example
-Required param: name
+Required param: value
 
 { 
-  "result":"goldfish" 
+  "value":"goldfish" 
 }
 ```
 ```json
@@ -81,15 +81,14 @@ Example
 
 #### **Environments**
 
-* `POST /services/:service/envs` - will create a new env for the given
-service
+* `POST /services/:service/envs` - will create a new env for the given service
 
 ```json
 Example
-Required param: name
+Required param: value
 
 {
-  "name":"production"
+  "value":"production"
 }
 ```
 ```json
@@ -101,8 +100,9 @@ Status: 200
 }
 ```
 
-*  `GET /services/:service/envs/:env/config` - this will return the
-entire map of config for the given service and environment
+#### **Config**
+
+* `GET /services/:service/envs/:env/config` - this will return the entire map of config for the given service and environment
 
 ```json
 Response
@@ -113,3 +113,54 @@ Status: 200
 }
 ```
 
+* `POST /services/:service/envs/:env/config` - this allows you to create new keys:values of config settings
+
+```json
+Example
+
+{
+  "api_url":"http://test.com","api_password":"123qwe"
+}
+```
+
+```json
+Response
+Status: 200
+
+{
+  "result":{"api_url":"http://test.com","api_password":"123qwe"}
+}
+```
+
+#### **Key**
+
+* `GET /services/:service/envs/:env/config/:key` - will return the value of the given key
+
+```json
+Response
+Status: 200
+
+{
+  "result":"123123123123"
+}
+```
+
+* `PUT /services/:service/envs/:env/config/:key` - will allow you to update the given key
+
+```json
+Example
+Required param: value
+
+{
+  "value":"987987987987"
+}
+```
+
+```json
+Response
+Status: 200
+
+{
+  "result":"987987987987"
+}
+```

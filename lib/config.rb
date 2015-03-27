@@ -38,9 +38,9 @@ class Config
   # { "name":"name_of_service_or_env" }
   def new_namespace(json)
     json = JSON.parse(json)
-    if !json.empty? && json.is_a?(Hash) && json["name"]
-      ETCD[@path + "/#{json["name"]}"].put "dir=true"
-      return { "result" => json["name"] }.to_json
+    if !json.empty? && json.is_a?(Hash) && json["value"]
+      ETCD[@path + "/#{json["value"]}"].put "dir=true"
+      return { "result" => json["value"] }.to_json
     else
       raise @@format_error
     end
@@ -57,7 +57,7 @@ class Config
         raise "#{k} is a key that already exists"
       end
     end
-    return new_config.to_json
+    return { "result" => new_config}.to_json
   end
 
   # key is a string of the key you want to retrieve
