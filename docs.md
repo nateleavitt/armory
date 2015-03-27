@@ -30,10 +30,10 @@ current versions is `v1` and should be requested as
 
 ### Endpoints
 
-* Important URL values
-:service = is the name of the service
-:env = is the name of the environment for the given service
-:key = is the name of the key for the given environment and service
+Important URL values
+* :service = is the name of the service
+* :env = is the name of the environment for the given service
+* :key = is the name of the key for the given environment and service
 
 
 #### **Service**
