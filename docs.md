@@ -41,10 +41,10 @@ current versions is `v1` and should be requested as
 
 Response
 ```json
-Status 200
+Status: 200
+
 {
  "result":["goldfish", "customerhub"]
-
 }
 ```
 
@@ -89,6 +89,7 @@ Example
 Response
 ```json
 Status: 200
+
 {
   "result":"production"
 }
