@@ -23,10 +23,10 @@ bundle install
 
 ### Start Service
 
-#### Docker
+**Docker**
 The provided Dockerfile will start up the service as a container
 
-#### Manually
+**Manually**
 This service was created to be run with Docker on CoreOS. However you
 can also manually run it locally on your machine. To do so, follow the
 steps below:
