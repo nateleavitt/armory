@@ -15,19 +15,24 @@ used as a central config for many services
 
 ### Installation
 ```bash
-#Download source
+# Download source
 git clone git@github.com:nateleavitt/armory.git
-#Install requirements
+# Install requirements
 bundle install
 ```
 
 ### Start Service
+
+#### Docker
+The provided Dockerfile will start up the service as a container
+
+#### Manually
 This service was created to be run with Docker on CoreOS. However you
 can also manually run it locally on your machine. To do so, follow the
 steps below:
 
 ```bash
-#Start ETCD & Puma Server using foreman
+# Start ETCD & Puma Server using foreman
 foreman start
 ```
 
