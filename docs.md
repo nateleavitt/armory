@@ -164,3 +164,15 @@ Status: 200
   "result":"987987987987"
 }
 ```
+
+### Errors
+
+All errors will respond back with a json object in the following format:
+
+```json
+Error Response
+
+{
+  "result":"error", "message":"Key not found!"
+}
+```
