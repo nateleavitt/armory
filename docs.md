@@ -5,13 +5,13 @@ service. The following describe the resources that make up the v1 API.
 ### Overview
 Here is the list of resources you will be able to access:
 
-* Service - This is the name of the service you are wanting to set/get
+* [Service](#service) - This is the name of the service you are wanting to set/get
 config for (ie.. usually your Github repo name
-* Environment - This allows you to have environment scope for your
+* [Environment](#env) - This allows you to have environment scope for your
 config. Some examples would be 'testing', 'staging', 'production'.
-* Config - This will return a map of key:values for the given service
+* [Config](#config) - This will return a map of key:values for the given service
 and environment
-* Key - This is the value of an individual setting
+* [Key](#key) - This is the value of an individual setting
 
 
 All calls should be made using the following HTTP verbs: GET, POST, PUT,
@@ -36,7 +36,7 @@ Important URL values
 * :key = is the name of the key for the given environment and service
 
 
-#### **Service**
+#### **<style id="service">Service</style>**
 
 * `GET /services` - will return an array of all services currently setup in Armory
 
@@ -79,7 +79,7 @@ Example
 }
 ```
 
-#### **Environments**
+#### **<style id="env">Environments</style>**
 
 * `POST /services/:service/envs` - will create a new env for the given service
 
@@ -100,7 +100,7 @@ Status: 200
 }
 ```
 
-#### **Config**
+#### **<style id="config">Config</style>**
 
 * `GET /services/:service/envs/:env/config` - this will return the entire map of config for the given service and environment
 
@@ -132,7 +132,7 @@ Status: 200
 }
 ```
 
-#### **Key**
+#### **<style id="key">Key</style>**
 
 * `GET /services/:service/envs/:env/config/:key` - will return the value of the given key
 
