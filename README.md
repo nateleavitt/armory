@@ -12,6 +12,13 @@ used as a central config for many services
 ### Requirements
 1. Bundler `gem install bundler`
 2. ETCD - https://github.com/coreos/etcd
+3. create a `.env` file with the following contents:
+
+```yaml
+DOCKER_HOST 127.0.0.1
+ADMIN_USER admin # update this value
+ADMIN_PASSWORD admin_password # update this value
+```
 
 ### Installation
 ```bash
