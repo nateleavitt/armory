@@ -23,9 +23,9 @@ bundle install
 ```
 Create a `.env` file with the following contents:
 ```yaml
-DOCKER_HOST 127.0.0.1
-ADMIN_USER admin # update this value
-ADMIN_PASSWORD admin_password # update this value
+DOCKER_HOST=127.0.0.1
+AUTH_USER=admin # update this value
+AUTH_PASSWORD=password # update this value
 ```
 
 ### Start Service

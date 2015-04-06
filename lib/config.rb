@@ -40,7 +40,7 @@ class Config
     json = JSON.parse(json)
     if !json.empty? && json.is_a?(Hash) && json["value"]
       ETCD[@path + "/#{json["value"]}"].put "dir=true"
-      return { "result" => json["value"] }.to_json
+      return { :result => json["value"] }.to_json
     else
       raise @@format_error
     end
@@ -57,13 +57,13 @@ class Config
         raise "#{k} is a key that already exists"
       end
     end
-    return { "result" => new_config}.to_json
+    return { :result => new_config}.to_json
   end
 
   # key is a string of the key you want to retrieve
   def find_key(key)
     if env_map.has_key?(key)
-      return { key => env_map[key]}.to_json
+      return { key => env_map[key]}
     else
       raise 'Key not found!'
     end
@@ -76,7 +76,7 @@ class Config
     if env_map.has_key?(key)
       if !json.empty? && json.is_a?(Hash) && json["value"]
           ETCD[@path + "/#{key}"].put "value=#{json["value"]}"
-          return { "result" => json["value"] }.to_json
+          return { :result => json["value"] }.to_json
       else
         raise @@format_error
       end

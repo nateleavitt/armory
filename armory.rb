@@ -21,6 +21,8 @@ class Armory < Sinatra::Application
     content_type :json
   end
 
+  include Authorize
+
   get '/' do
     'Hello World.. this is Armory'
   end
@@ -33,7 +35,7 @@ class Armory < Sinatra::Application
   # { "services":["goldfish","customerhub"] }
   get '/services', provides: :json do
     @config = Config.find
-    { "result" => @config.env_map.keys}.to_json
+    { :result => @config.env_map.keys}.to_json
   end
 
   # creates a new service namespace
@@ -51,7 +53,7 @@ class Armory < Sinatra::Application
   # { "envs":["testing","staging"] }
   get '/services/:service/envs', provides: :json do
     @config = Config.find(service: params[:service])
-    { "result" => @config.env_map.keys}.to_json
+    { :result => @config.env_map.keys}.to_json
   end
 
   # create a new service/environment
@@ -67,7 +69,7 @@ class Armory < Sinatra::Application
   # will return a map of key:value
   get '/services/:service/envs/:env/config', provides: :json do
     @config = Config.find(service: params[:service], env: params[:env])
-    @config.env_map.to_json
+    { :result => @config.env_map}.to_json
   end
 
   # create new key,val for config
@@ -84,7 +86,7 @@ class Armory < Sinatra::Application
   # { "api_key":"1234567" }
   get '/services/:service/envs/:env/config/:key', provides: :json do
     @config = Config.find(service: params[:service], env: params[:env])
-    @config.find_key(params[:key])
+    { :result => @config.find_key(params[:key])}.to_json
   end
 
   # update the key
@@ -101,28 +103,17 @@ class Armory < Sinatra::Application
     # status 404
 
     e = env['sinatra.error']
-    {:result => 'error', :message => e.message}.to_json
+    { :result => 'error', :message => e.message }.to_json
   end
 
   not_found do
-    {:result => 'error', :message => "404 Not found!"}.to_json
+    { :result => 'error', :message => "404 Not found!" }.to_json
   end
 
   private
 
     def check_for_json
       pass unless request.accept? 'application/json'
-    end
-
-    def authenticate!
-      return if authorized?
-      headers['WWW-Authenticate'] = 'Basic realm="Restricted Area"'
-      raise "Not authorized"
-    end
-
-    def authorized?
-      @auth ||=  Rack::Auth::Basic::Request.new(request.env)
-      @auth.provided? and @auth.basic? and @auth.credentials and @auth.credentials == [ ENV['AUTH_USERNAME'], ENV['AUTH_PASSWORD'] ]
     end
 
 end
