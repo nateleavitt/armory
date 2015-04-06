@@ -11,7 +11,9 @@ class Config
   # }
 
   attr_accessor :path, :service, :env, :env_map
-  ETCD = RestClient::Resource.new("#{ENV['DOCKER_HOST']}:4001/v2/keys/armory",
+  docker_host = ENV['DOCKER_HOST'].dup
+  docker_host.slice!(":5000")
+  ETCD = RestClient::Resource.new("#{docker_host}:4001/v2/keys/armory",
                                  :content_type => "application/json")
   @@format_error = "Please format your json data correctly. See https://github.com/nateleavitt/armory for the proper format"
 
