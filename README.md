@@ -14,14 +14,14 @@ used as a central config for many services
 2. ETCD - https://github.com/coreos/etcd (already installed on CoreOS)
 
 ### Installation
-1. Run the following commands
+Run the following commands
 ```bash
 # Download source
 git clone git@github.com:nateleavitt/armory.git
 # Install requirements
 bundle install
 ```
-2. Create a `.env` file with the following contents:
+Create a `.env` file with the following contents:
 ```yaml
 DOCKER_HOST 127.0.0.1
 ADMIN_USER admin # update this value
