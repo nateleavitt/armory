@@ -7,7 +7,7 @@ Here is the list of resources you will be able to access:
 
 * [Service](#service) - This is the name of the service you are wanting to set/get
 config for (ie.. usually your Github repo name
-* [Environment](#environment) - This allows you to have environment scope for your
+* [Environment](#envi) - This allows you to have environment scope for your
 config. Some examples would be 'testing', 'staging', 'production'.
 * [Config](#config) - This will return a map of key:values for the given service
 and environment
@@ -79,7 +79,7 @@ Example
 }
 ```
 
-#### **<style id="environment">Environments</style>**
+#### **<style id="envi">Environments</style>**
 
 * `POST /services/:service/envs` - will create a new env for the given service
 
