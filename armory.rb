@@ -4,6 +4,7 @@ Dir["./lib/*.rb"].each {|file| require file}
 Bundler.require
 
 class Armory < Sinatra::Application
+  include Authorize
 
   configure do
     enable :logging
@@ -20,8 +21,6 @@ class Armory < Sinatra::Application
     authenticate!
     content_type :json
   end
-
-  include Authorize
 
   get '/' do
     'Hello World.. this is Armory'

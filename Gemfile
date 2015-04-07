@@ -8,5 +8,6 @@ gem 'json'
 gem 'foreman'
 # gem 'etcd'
 gem 'puma'
+gem 'rspec'
 
 
