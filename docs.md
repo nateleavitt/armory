@@ -23,11 +23,6 @@ header in your client.
 3. PUT is to update a resource
 4. DELETE is to delete the resource
 
-### Current Version
-Currently the API version is specified in the url of the api request. The
-current versions is `v1` and should be requested as
-`https://url-of-service.com/v1`.
-
 ### Endpoints
 
 Important URL values
