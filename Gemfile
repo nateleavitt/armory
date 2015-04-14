@@ -8,6 +8,10 @@ gem 'json'
 gem 'foreman'
 # gem 'etcd'
 gem 'puma'
-gem 'rspec'
+
+group :test do
+  gem "rspec"
+  gem "rack-test"
+end
 
 
