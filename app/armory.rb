@@ -1,7 +1,4 @@
-require 'bundler'
-Dir["./lib/*.rb"].each {|file| require file}
-
-Bundler.require
+Dir["./app/*.rb"].each {|file| require file}
 
 class Armory < Sinatra::Application
   include Authorize
