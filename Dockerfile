@@ -1,5 +1,9 @@
-# base image
 FROM ruby:2.2.0
+
+EXPOSE 5100
+
+# Used for service discovery
+ENV SERVICE_NAME armory
 
 # clone the repo
 ADD ./ /app/
